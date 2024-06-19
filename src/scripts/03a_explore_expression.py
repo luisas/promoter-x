@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
-import os
 import pandas as pd
 import seaborn as sns
 import glob
@@ -53,6 +52,8 @@ exps = exps + 1
 # plot histogram and log scale
 sns.histplot(exps, log_scale=True)
 plt.show()
+
+
 
 
 
