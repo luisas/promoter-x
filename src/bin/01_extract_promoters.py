@@ -1,11 +1,21 @@
-# Script in python 
+#!/usr/bin/env python3
+
 import pandas as pd
 from pyfaidx import Fasta
-import matplotlib.pyplot as plt
+import sys
+#import matplotlib.pyplot as plt
+# gencode_gtf_path = "./data/annotation/gencode.v29.annotation.gtf"
+# fasta = Fasta('./data/genomes/GRCh38.primary_assembly.genome.fa')
+# output_gtf = "./data/promoters/promoters_100.gtf"
+# output_fasta = "./data/promoters/promoters_100.fa"
+# upstream_threshold = 100
 
-gencode_gtf_path = "./data/annotation/gencode.v29.annotation.gtf"
-mapper_entrez = "./data/mapper/gencode.v46.metadata.EntrezGene.gz"
-fasta = Fasta('./data/genomes/GRCh38.primary_assembly.genome.fa')
+gencode_gtf_path = sys.argv[1]
+fasta = Fasta(sys.argv[2])
+output_gtf = sys.argv[3]
+output_fasta = sys.argv[4]
+upstream_threshold = int(sys.argv[5])
+downstream_threshold = 0 
 
 # I took gencode annotation v29, the one most encode entries use. 
 # Selected the entries that are protein coding and have a mapping with entrez id
@@ -22,14 +32,12 @@ gtf_original["gene_id"] = gtf_original[8].str.extract(r'gene_id "(.*?)";')
 gtf_original = gtf_original[gtf_original[8].str.contains("protein_coding")]
 all_protein_coding_genes = gtf_original[gtf_original[2] == "gene"]
 # save all protein coding genes ids
-all_protein_coding_genes.to_csv("./data/annotation/protein_coding_genes.gtf", sep="\t", index=False)
+#all_protein_coding_genes.to_csv("./data/annotation/protein_coding_genes.gtf", sep="\t", index=False)
 
 
 gtf_original = gtf_original[gtf_original[2] == "gene"]
 gtf = gtf_original[[0, 3, 4, 6, "gene_id"]]
 gtf.columns = ["Chromosome", "Gene Start", "Gene End", "Strand", "GeneID"]
-
-gtf
 
 def remove_overlapping_promoters(promoters, all_genes):
     indices_to_drop = []
@@ -67,23 +75,18 @@ def count_promoters(gtf):
 # ------------------------------------------------
 #               Extract promoters
 # ------------------------------------------------
-upstream_threshold = 100
-downstream_threshold = 0 
 gtf = get_promoters(gtf, upstream_threshold, downstream_threshold)
-
-
-
 
 # ------------------------------------------------
 # Save and extract
 # ------------------------------------------------
 
 # save these extracted promoters 
-gtf.to_csv("./data/promoters/promoters_100.gtf", sep="\t", index=False)
+gtf.to_csv(output_gtf, sep="\t", index=False)
 
 # Create a fasta file with promoter regions
 # extract sequence of promoter regions
-with open('./data/promoters/promoters_100.fa', 'w') as f:
+with open(output_fasta, 'w') as f:
     # Iterate over each row in the DataFrame
     for i, row in gtf.iterrows():
         # Extract the sequence from the fasta file
@@ -99,22 +102,30 @@ with open('./data/promoters/promoters_100.fa', 'w') as f:
 # where we remove promoters that overlap with other protein coding genes
 # ---------------------------------------------------------------------------
 # check the number of promoters vs size of threshold
-thresholds = [1000, 500, 100, 50, 5]
-promoter_count_benchmark = []
-for threshold in thresholds:
-    print(threshold)
-    promoter_count_benchmark.append(count_promoters(get_promoters(gtf, threshold, 0)))
-
-# save the counts in a file
-promoter_count_benchmark_df = pd.DataFrame({"Threshold": thresholds, "Promoter Count": promoter_count_benchmark})
-promoter_count_benchmark_df.to_csv("./data/promoters/promoter_count_benchmark.csv", index=False)
-
-promoter_count_benchmark_df
-
-#  plot the number of promoters vs size of threshold
-plt.plot(thresholds, promoter_count_benchmark)
-# scale limit y from 0 to 16000
-plt.ylim(0, 16000)
-plt.xlabel("Threshold")
-plt.ylabel("Number of promoters")
-plt.show()
+# thresholds = [1000, 500, 100, 50, 5]
+# promoter_count_benchmark = []
+# for threshold in thresholds:
+#     print(threshold)
+#     promoter_count_benchmark.append(count_promoters(get_promoters(gtf, threshold, 0)))
+# # save the counts in a file
+# promoter_count_benchmark_df = pd.DataFrame({"Threshold": thresholds, "Promoter Count": promoter_count_benchmark})
+# promoter_count_benchmark_df.to_csv("./data/promoters/promoter_count_benchmark.csv", index=False)
+# promoter_count_benchmark_df = pd.read_csv("./data/promoters/promoter_count_benchmark.csv")
+# make a barplot seaborn
+#import seaborn as sns
+# use K instead of 1000 for the Promoter count
+# devide by 1000 and add K 
+#promoter_count_benchmark_df["Promoter Count"] = promoter_count_benchmark_df["Promoter Count"].astype(str) + " K"
+# sns.barplot(data=promoter_count_benchmark_df, x="Threshold", y="Promoter Count", color = "grey")
+# # add labels
+# plt.xlabel("Promoter length")
+# # save plot
+# plt.savefig("./data/plots/promoter_count_benchmark.png")
+# plt.show()
+# #  plot the number of promoters vs size of threshold
+# plt.plot(thresholds, promoter_count_benchmark)
+# # scale limit y from 0 to 16000
+# plt.ylim(0, 16000)
+# plt.xlabel("Threshold")
+# plt.ylabel("Number of promoters")
+# plt.show()
