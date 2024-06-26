@@ -61,7 +61,7 @@ def get_promoters(gtf, upstream_threshold, downstream_threshold):
 
     # extract promoter regions and add to gtf
     gtf["Promoter Start"] = gtf["Gene Start"] - upstream_threshold
-    gtf["Promoter End"] = gtf["Gene Start"] + downstream_threshold
+    gtf["Promoter End"] = gtf["Gene Start"] -1 + downstream_threshold
     gtf = gtf[gtf["Promoter Start"] > 0]
     gtf = gtf[gtf["Promoter End"] > 0]
 
