@@ -16,7 +16,6 @@ workflow PROMOTER_SIMILARITY_ANALYSIS{
 
     SEQUENCE_SIMILARITY(EXTRACT_PROMOTERS.out.promoters_fa, promoter_length)
 
-
-
+     
 
 }
