@@ -9,16 +9,6 @@ import glob
 import sys
 import numpy as np
 np.random.seed(42)
-# blue_palette = sns.color_palette("Blues", n_colors=10)
-# green_palette = sns.color_palette("Reds", n_colors=10)
-# # Create a custom palette with the first two shades of blue and the second two shades of green
-# custom_palette = [blue_palette[6], blue_palette[9], green_palette[6], green_palette[9]]
-# # Set the palette
-# sns.set_palette(custom_palette)
-
-
-
-#promoter_pairs = pd.read_csv("./data/promoters/promoter_pairs_test_FULL.csv")
 
 promoter_pairs =  pd.read_csv(sys.argv[1])
 expression_dir = sys.argv[2]
@@ -33,7 +23,6 @@ for file in expression_files:
     expression["name"] = name
     expression["tissue"] = file.split("/")[-2]
     expression["complete_name"] = file.split("/")[-2] + "_" + name
-    # load promoter pairs
     expression["gene_id"] = expression["gene_id"].astype(str)
 
     # merge expression data
@@ -43,17 +32,30 @@ for file in expression_files:
     first_columns = promoter_pairs_with_expression.columns[:4]
     # append pme_TPM and complete_name
     first_columns = [first_columns[0], first_columns[1], first_columns[2], first_columns[3], "pme_TPM", "complete_name"]
-    print(first_columns)
     promoter_pairs_with_expression = promoter_pairs_with_expression[ first_columns ]
-
 
     second_gene_exp = expression[["gene_id", "pme_TPM"]]
     promoter_pairs_with_expression = promoter_pairs_with_expression.merge(second_gene_exp, left_on="gene2", right_on="gene_id")
 
     promoter_pairs_with_expression.reset_index(drop=True, inplace=True)
     expressions = pd.concat([expressions, promoter_pairs_with_expression], ignore_index=True)
-    # remove columns gene_id
     expressions.drop(columns=["gene_id"], inplace=True)
+
+
+# Now do the same thing as above but store all the expression values in a vector 
+vector_labels = []
+vector_values = []
+for file in expression_files:
+    expression = pd.read_csv(file, sep="\t")
+    name = file.split(".tsv")[0].split("/")[-1]
+    complete_name = file.split("/")[-2] + "_" + name
+    # extract pme_TPM 
+    pme_TPM = expression["pme_TPM"]
+    vector_labels.append(complete_name)
+    vector_values.append(pme_TPM)
+
+# now add the promoter pairs to the expression data
+
 
 # save the expression data to a csv file
 expressions.to_csv(outfile, index = False)
