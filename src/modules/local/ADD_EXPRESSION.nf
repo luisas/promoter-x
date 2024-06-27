@@ -5,7 +5,7 @@ process ADD_EXPRESSION{
     tuple val(meta), path(expression_files)
 
     output:
-    tuple val(meta), path(expression_files), emit: csv
+    tuple val(meta), path("${meta.id}_exp.csv"), emit: csv
 
     script: 
     """

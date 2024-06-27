@@ -72,7 +72,6 @@ expressions.to_csv(outfile, index = False)
 # sns.scatterplot(data=promoters_seq_id_1, x="pme_TPM_x", y="pme_TPM_y", hue="Sequence Identity", s = 3)
 # plt.show()
 
-# now 
 
 
 
@@ -80,13 +79,6 @@ expressions.to_csv(outfile, index = False)
 # df_plot_nozeros = df_plot[df_plot["pme_TPM_y"] > 0]
 # df_plot["TPM_similarity"] = -abs(np.log(df_plot["pme_TPM_x"] / df_plot["pme_TPM_y"]))
 # df_plot["variance"] = df_plot.groupby("GeneID1")["pme_TPM_x"].transform("var")
-
-
-
-
-
-
-
 
 
 # df_plot

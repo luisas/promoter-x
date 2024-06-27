@@ -22,10 +22,11 @@ workflow {
             promoter_length: promoter_length.toInteger()
     }.set{promoter_similarity_input}
 
+    // Input parameters for ADD_EXPRESSION
     expression_files = Channel.fromPath("${params.expression_files}", type: "dir").map{
         it -> [[id:"expression"], it ]
     }
-    expression_files.view()
+
     log.info """\
             PROMOTER SIMILARITY  ~  version 0.1"
             ======================================="

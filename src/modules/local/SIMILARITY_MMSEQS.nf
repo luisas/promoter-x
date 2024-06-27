@@ -10,8 +10,8 @@ process SIMILARITY_MMSEQS{
     script:
     """
     grep -A 1 "ENSG00000162998.4" $fasta > gene.fa
-    mmseqs easy-search gene.fa $fasta res tmp --prefilter-mode 1 --search-type 3 --max-seqs 1000000 --diag-score 0
-    # keep columns 1 2 and 3 and add a header
+    #mmseqs easy-search gene.fa $fasta res tmp --prefilter-mode 1 --search-type 3 --max-seqs 1000000 --diag-score 0
+    mmseqs easy-search gene.fa $fasta res tmp --search-type 3 --max-seqs 1000000
     echo "gene1,gene2,promoter_similarity_mmseqs" > ${meta.id}_sim.csv
     awk -v OFS=',' '{print \$1, \$2, \$3}' res >> ${meta.id}_sim.csv
     """
