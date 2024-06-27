@@ -22,6 +22,10 @@ workflow {
             promoter_length: promoter_length.toInteger()
     }.set{promoter_similarity_input}
 
+    expression_files = Channel.fromPath("${params.expression_files}", type: "dir").map{
+        it -> [[id:"expression"], it ]
+    }
+    expression_files.view()
     log.info """\
             PROMOTER SIMILARITY  ~  version 0.1"
             ======================================="
@@ -30,6 +34,6 @@ workflow {
             """
             .stripIndent()
     
-    PROMOTER_SIMILARITY_ANALYSIS(promoter_similarity_input.files, promoter_similarity_input.promoter_length)
+    PROMOTER_SIMILARITY_ANALYSIS(promoter_similarity_input.files, promoter_similarity_input.promoter_length, expression_files)
 
 }
