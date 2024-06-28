@@ -66,6 +66,8 @@ def get_promoters(gtf, upstream_threshold, downstream_threshold):
     gtf = gtf[gtf["Promoter End"] > 0]
 
     gtf = remove_overlapping_promoters(gtf, all_protein_coding_genes)
+    # remove version number from gene_id
+    gtf["GeneID"] = gtf["GeneID"].str.replace(r'\.\d+', '', regex=True)
     return(gtf)
 
 def count_promoters(gtf):

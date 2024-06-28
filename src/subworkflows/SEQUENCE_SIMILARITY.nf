@@ -1,6 +1,6 @@
 
 include { SIMILARITY_SW } from "../modules/local/SIMILARITY_SW.nf"
-include { SIMILARITY_MMSEQS } from "../modules/local/SIMILARITY_MMSEQS.nf"
+include { SIMILARITY_MMSEQS as SIMILARITY_MMSEQS_NUCLEOTIDE } from "../modules/local/SIMILARITY_MMSEQS.nf"
 include { ADD_PROMOTER_LENGTH } from "../modules/local/ADD_PROMOTER_LENGTH.nf"
 
 workflow SEQUENCE_SIMILARITY{
@@ -18,8 +18,8 @@ workflow SEQUENCE_SIMILARITY{
     }
 
     if(params.mmseqs){
-        SIMILARITY_MMSEQS(promoters_fasta, promoter_length)
-        sequence_similarity = SIMILARITY_MMSEQS.out.sim_csv
+        SIMILARITY_MMSEQS_NUCLEOTIDE(promoters_fasta, "promoter_similarity")
+        sequence_similarity = SIMILARITY_MMSEQS_NUCLEOTIDE.out.csv
     }
 
     

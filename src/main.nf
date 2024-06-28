@@ -14,6 +14,7 @@ workflow {
         it -> [[id:"gencode"],it ]
     }
     fasta = Channel.fromPath("${params.fasta}")
+
     promoter_length =  params.promoter_length.toString().tokenize(',')
 
     gtf.combine(fasta).combine(promoter_length).multiMap{

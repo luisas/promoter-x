@@ -24,6 +24,8 @@ for file in expression_files:
     expression["tissue"] = file.split("/")[-2]
     expression["complete_name"] = file.split("/")[-2] + "_" + name
     expression["gene_id"] = expression["gene_id"].astype(str)
+    # remove version from gene_id
+    expression["gene_id"] = expression["gene_id"].str.replace(r'\.\d+', '', regex=True)
 
     # merge expression data
     promoter_pairs_with_expression = promoter_pairs.merge(expression, left_on="gene1", right_on="gene_id")
@@ -39,7 +41,7 @@ for file in expression_files:
 
     promoter_pairs_with_expression.reset_index(drop=True, inplace=True)
     expressions = pd.concat([expressions, promoter_pairs_with_expression], ignore_index=True)
-    expressions.drop(columns=["gene_id"], inplace=True)
+    #expressions.drop(columns=["gene_id"], inplace=True)
 
 
 # Now do the same thing as above but store all the expression values in a vector 
