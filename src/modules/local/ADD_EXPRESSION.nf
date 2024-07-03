@@ -9,6 +9,6 @@ process ADD_EXPRESSION{
 
     script: 
     """
-    02_add_expression.py $csv $expression_files "${meta.id}_exp.csv"
+    02_add_expression_vector.py $csv $expression_files "${meta.id}_exp.csv"
     """
 }
