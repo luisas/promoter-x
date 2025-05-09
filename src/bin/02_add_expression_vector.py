@@ -17,7 +17,6 @@ outfile = sys.argv[3]
 
 
 
-
 expression_sample_ids = []
 expression_dict = {}
 for file in expression_files:
@@ -35,6 +34,7 @@ for file in expression_files:
             expression_dict[gene_id[i]].append(pme_TPM[i])
         else:
             expression_dict[gene_id[i]] = [pme_TPM[i]]
+
 
 
 expression = pd.DataFrame(list(expression_dict.items()), columns=['gene_id', 'pme_TPM'])
